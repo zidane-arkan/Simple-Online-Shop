@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { CartContext } from "../store/shopping-cart-context";
 
 export default function Cart({ onUpdateItemQuantity }) {
+  // Use for connect component to context and use their values
   // const cartCtx = useContext(CartContext);
   const { items } = useContext(CartContext);
 

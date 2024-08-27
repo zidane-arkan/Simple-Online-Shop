@@ -72,6 +72,7 @@ function App() {
   };
 
   return (
+    // <CartContext.Consumer> (contextName) => { return {<COMPONENTS/>} } </CartContext.Consumer>
     <CartContext.Provider value={ctxValue}>
       <Header
         cart={shoppingCart}
