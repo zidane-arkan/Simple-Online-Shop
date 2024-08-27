@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { CartContext } from "./store/shopping-cart-context.jsx";
 import Header from "./components/Header.jsx";
 import Shop from "./components/Shop.jsx";
 import Product from "./components/Product.jsx";
@@ -67,19 +67,21 @@ function App() {
   }
 
   return (
-    <>
+    <CartContext.Provider value={{ items: [] }}>
       <Header
         cart={shoppingCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
       <Shop>
+        {/* Component Composition = Not Recommended
+         */}
         {DUMMY_PRODUCTS.map((product) => (
           <li key={product.id}>
             <Product {...product} onAddToCart={handleAddItemToCart} />
           </li>
         ))}
       </Shop>
-    </>
+    </CartContext.Provider>
   );
 }
 
