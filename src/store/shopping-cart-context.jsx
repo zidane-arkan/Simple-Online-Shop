@@ -23,9 +23,9 @@ function shoppingCartReducer(state, action) {
         ...existingCartItem,
         quantity: existingCartItem.quantity + 1,
       };
+
       updatedItems[existingCartItemIndex] = updatedItem;
     } else {
-      // Ambil cart items dari DUMMY_DS yang sesuai dengan id
       const product = DUMMY_PRODUCTS.find(
         (product) => product.id === action.payload
       );
@@ -36,6 +36,30 @@ function shoppingCartReducer(state, action) {
         price: product.price,
         quantity: 1,
       });
+    }
+
+    return {
+      ...state,
+      items: updatedItems,
+    };
+  }
+
+  if (action.type === "UPDATE_ITEM") {
+    const updatedItems = [...state.items];
+
+    const updatedItemIndex = updatedItems.findIndex(
+      (item) => item.id === action.payload.productId
+    );
+
+    const updatedItem = updatedItems[updatedItemIndex];
+
+    updatedItem.quantity += action.payload.amount;
+    console.log(updatedItem.quantity);
+
+    if (updatedItem.quantity <= 0) {
+      updatedItems.splice(updatedItemIndex, 1);
+    } else {
+      updatedItems[updatedItemIndex] = updatedItem;
     }
 
     return {
@@ -55,69 +79,49 @@ export default function CartContextProvider({ children }) {
     }
   );
 
-  const [shoppingCart, setShoppingCart] = useState({
-    items: [],
-  });
+  // const [shoppingCart, setShoppingCart] = useState({
+  //   items: [],
+  // });
 
   function handleAddItemToCart(id) {
     shoppingCartDispatch({
       type: "ADD_ITEM",
       payload: id,
     });
+  }
+
+  function handleUpdateCartItemQuantity(productId, amount) {
+    // console.log(amount);
+    shoppingCartDispatch({
+      type: "UPDATE_ITEM",
+      payload: {
+        productId,
+        amount,
+      },
+    });
 
     // setShoppingCart((prevShoppingCart) => {
     //   const updatedItems = [...prevShoppingCart.items];
-
-    //   const existingCartItemIndex = updatedItems.findIndex(
-    //     (cartItem) => cartItem.id === id
+    //   const updatedItemIndex = updatedItems.findIndex(
+    //     (item) => item.id === productId
     //   );
-    //   const existingCartItem = updatedItems[existingCartItemIndex];
 
-    //   if (existingCartItem) {
-    //     const updatedItem = {
-    //       ...existingCartItem,
-    //       quantity: existingCartItem.quantity + 1,
-    //     };
-    //     updatedItems[existingCartItemIndex] = updatedItem;
+    //   const updatedItem = {
+    //     ...updatedItems[updatedItemIndex],
+    //   };
+
+    //   updatedItem.quantity += amount;
+
+    //   if (updatedItem.quantity <= 0) {
+    //     updatedItems.splice(updatedItemIndex, 1);
     //   } else {
-    //     const product = DUMMY_PRODUCTS.find((product) => product.id === id);
-    //     updatedItems.push({
-    //       id: id,
-    //       name: product.title,
-    //       price: product.price,
-    //       quantity: 1,
-    //     });
+    //     updatedItems[updatedItemIndex] = updatedItem;
     //   }
 
     //   return {
     //     items: updatedItems,
     //   };
     // });
-  }
-
-  function handleUpdateCartItemQuantity(productId, amount) {
-    setShoppingCart((prevShoppingCart) => {
-      const updatedItems = [...prevShoppingCart.items];
-      const updatedItemIndex = updatedItems.findIndex(
-        (item) => item.id === productId
-      );
-
-      const updatedItem = {
-        ...updatedItems[updatedItemIndex],
-      };
-
-      updatedItem.quantity += amount;
-
-      if (updatedItem.quantity <= 0) {
-        updatedItems.splice(updatedItemIndex, 1);
-      } else {
-        updatedItems[updatedItemIndex] = updatedItem;
-      }
-
-      return {
-        items: updatedItems,
-      };
-    });
   }
 
   const ctxValue = {
